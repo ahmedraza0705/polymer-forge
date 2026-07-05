@@ -10,7 +10,7 @@ import { OPEN_LEAD_DIALOG_EVENT, saveLead, type LeadDialogPrefill } from "@/lib/
 const PHONE_DIGITS = "919033786017";
 const PHONE = "+91 9033786017";
 
-function makeWhatsAppUrl(form: typeof empty, source: string) {
+function makeWhatsAppUrl(form: z.infer<typeof schema>, source: string) {
   const messageLines = [
     "Hello Kohinoor Polytech, I would like to enquire about your polymer products.",
     "",
