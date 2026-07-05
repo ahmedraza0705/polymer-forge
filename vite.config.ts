@@ -38,6 +38,7 @@ export default defineConfig({
     transformer: "postcss",
   },
   build: {
+    cssMinify: false,
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       onwarn(warning, warn) {
