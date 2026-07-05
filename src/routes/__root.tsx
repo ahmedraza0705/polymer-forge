@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { Navbar } from "@/components/site/Navbar";
@@ -77,6 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#0f172a" },
       { title: "Kohinoor Polytech — Engineering the Future of Sustainable Polymers" },
       { name: "description", content: "Kohinoor Polytech manufactures premium PPHP, PPCP and custom polypropylene compounds from recycled polymers for global industrial manufacturing." },
       { name: "author", content: "Kohinoor Polytech" },
@@ -91,6 +92,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/Assets/logo_transparent_blue.png",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -104,29 +110,6 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (isDark) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-                    if (e.matches) {
-                      document.documentElement.classList.add('dark');
-                    } else {
-                      document.documentElement.classList.remove('dark');
-                    }
-                  });
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
       </head>
       <body>
         {children}
@@ -147,6 +130,30 @@ function RootComponent() {
 }
 
 function SiteShell() {
+  useEffect(() => {
+    try {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      const listener = (e: MediaQueryListEvent) => {
+        if (e.matches) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      };
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', listener);
+      return () => window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', listener);
+    } catch (e) {
+      // Ignore environments without window or matchMedia.
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
